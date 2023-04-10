@@ -1,5 +1,29 @@
-.container {
-    height: 300px;
-    width: 500px;
+.landingPage {
+    padding: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
+
+.container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 2rem;
+}
+
+.searchInput {
+    height: 52px;
+    width: 30rem;
+    font-size: xx-large;
+}
+
+.message {
+    font-size: medium;
+    text-align: center;
+}
+
 
