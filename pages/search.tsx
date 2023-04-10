@@ -1,5 +1,5 @@
 import { getMovie } from '@/lib/searchMovie';
-import { Badge, Card, Dropdown, Grid, Input, Navbar, Pagination, Spacer } from '@nextui-org/react';
+import { Badge, Card, Dropdown, Grid, Input, Loading, Navbar, Pagination, Spacer } from '@nextui-org/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -49,11 +49,12 @@ interface ErrorResponse {
 
 export default function Movies() {
     const router = useRouter();
+    const amountContents = 10
     let { q } = router.query; // search query
 
     const [page, setPage] = useState(1)
     const [message, setMessage] = useState("")
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
     const [movieData, setMovieData] = useState<SearchResponse>({
         movies: [],
         total: 0,
@@ -62,6 +63,7 @@ export default function Movies() {
 
     const fetchMovies = async () => {
         // Get movies from IMDB API by search query
+        setIsLoading(true)
         getMovie(q, page)
             .then((result: any) => {
                 // Display error message if request failed.
@@ -79,7 +81,7 @@ export default function Movies() {
 
     useEffect(() => {
         fetchMovies()
-    }, [page])
+    }, [q, page])
 
     return (
         <>
@@ -109,32 +111,33 @@ export default function Movies() {
             <main className={styles.page}>
                 {message ? message : `Found! Movie with title ${q} has ${movieData.total} results.`}
 
-                <Grid.Container gap={2}>
-                    {movieData.movies.map((movie: any) => (
-                        <Grid>
-                            <Card
-                                key={movie.imdbID}
-                                aria-label={`${movie.imdbID}-${movie.year}`}
-                                className={styles.movieCard}>
-                                <Card.Header className={styles.poster}>
-                                    <Image
-                                        src={movie.Poster !== "N/A" ? movie.Poster : ""}
-                                        alt="movie poster"
-                                        width={140} height={160} />
-                                </Card.Header>
-                                <Card.Body>
-                                    <p className={styles.title}> {movie.Title} ({movie.Year}) </p>
-                                    <Badge> {movie.Type} </Badge>
-                                </Card.Body>
-                            </Card>
-                        </Grid>
-                    ))}
+                <Grid.Container gap={2} className={styles.content}>
+                    {isLoading ? <Loading type='points'/>
+                        : movieData.movies.map((movie: any) => (
+                            <Grid>
+                                <Card
+                                    key={movie.imdbID}
+                                    aria-label={`${movie.imdbID}-${movie.year}`}
+                                    className={styles.movieCard}>
+                                    <Card.Header className={styles.poster}>
+                                        <Image
+                                            src={movie.Poster !== "N/A" ? movie.Poster : ""}
+                                            alt="movie poster"
+                                            width={140} height={160} />
+                                    </Card.Header>
+                                    <Card.Body>
+                                        <p className={styles.title}> {movie.Title} ({movie.Year}) </p>
+                                        <Badge> {movie.Type} </Badge>
+                                    </Card.Body>
+                                </Card>
+                            </Grid>
+                        ))}
                 </Grid.Container>
                 <Pagination
                     className={styles.pagination}
                     onChange={(page: number) => setPage(page)}
                     color={"gradient"}
-                    total={movieData.total} />
+                    total={movieData.total/amountContents} />
             </main>
             <Spacer />
         </>

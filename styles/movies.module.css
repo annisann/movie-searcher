@@ -6,6 +6,11 @@
     align-items: center;
 }
 
+.content {
+    min-height: 90vh;
+    height: auto;
+}
+
 .movieCard {
     width: 220px;
     height: 340px;
