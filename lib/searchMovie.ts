@@ -7,7 +7,7 @@ const getMovie = async (
     type?: string,
     year?: number) => {
         const titleQuery: string = `&s=${title}`
-        const pageQuery: string = `&p=${page}`
+        const pageQuery: string = `&page=${page}`
         const typeQuery: string = type? `&type=${type}` : ``
         const yearQuery: string = year? `&y=${year}`: ``
 
