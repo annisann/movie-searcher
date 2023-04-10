@@ -10,25 +10,32 @@ export default function Landing() {
   const router = useRouter()
 
   const [searchQuery, setSearchQuery] = useState("")
+  const [message, setMessage] = useState("")
 
   const searchMovie = () => {
-    router.push({
-      pathname: "/search",
-      search: `q=${searchQuery}`,
-    })
+    searchQuery ?
+      router.push({
+        pathname: "/search",
+        search: `q=${searchQuery}`,
+      }) : setMessage("Oops, you forgot to input the movie title.")
   }
 
   return (
-    <main className={styles.container}>
-      <Input
-        onChange={(e: ChangeEvent<FormElement>) => setSearchQuery(e.target.value)}
-        labelPlaceholder="Movie title" />
-      <Button
-        href="/movies"
-        auto
-        bordered
-        color={"gradient"}
-        onPress={searchMovie}> search </Button>
+    <main className={styles.landingPage}>
+      <div className={styles.container}>
+        <Input
+          className={styles.searchInput}
+          size="xl"
+          onChange={(e: ChangeEvent<FormElement>) => setSearchQuery(e.target.value)}
+          labelPlaceholder="Movie title" />
+        <Button
+          className={styles.searchButton}
+          auto
+          bordered
+          color={"gradient"}
+          onPress={searchMovie}> search </Button>
+      </div>
+      <p className={styles.message}> {message} </p>
     </main>
   )
 }
