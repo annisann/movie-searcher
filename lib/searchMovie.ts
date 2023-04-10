@@ -1,4 +1,4 @@
-const baseUrl: string = "http://www.omdbapi.com/?"
+const baseUrl: string = "https://www.omdbapi.com/?"
 const apiKey: string = `&apikey=${process.env.API_KEY}`
 
 const getMovie = async (
@@ -12,7 +12,7 @@ const getMovie = async (
         const yearQuery: string = year? `&y=${year}`: ``
 
         const url: string = baseUrl + titleQuery + pageQuery + typeQuery + yearQuery + apiKey
-        
+
         return await fetch(url)
             .then(async (response) => await response.json())
 }
