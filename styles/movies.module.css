@@ -1,0 +1,9 @@
+.page {
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+.movieCard {
+    width: 140px;
+    height: 200px;
+}

@@ -1,6 +1,9 @@
 import { getMovie } from '@/lib/searchMovie';
+import { Card, Dropdown, Grid, Input, Navbar, Pagination } from '@nextui-org/react';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import styles from '@/styles/movies.module.css'
 
 interface Movie {
     title: string;
@@ -76,8 +79,50 @@ export default function Movies() {
     useEffect(() => {
         fetchMovies()
     }, [q])
-    // console.log('movieData', movieData)
+    
     return (
-        <> {message ? message : `Found! Movie with title ${q} has ${movieData.total} results.`} </>
+        <>
+            <Navbar variant={"sticky"}>
+                <Navbar.Brand>
+                    {/* <Image src="favicon.svg" alt="logo" width={20} height={20} /> */}
+                </Navbar.Brand>
+                <Navbar.Content>
+                    <Input placeholder="Movie title" />
+                </Navbar.Content>
+                <Navbar.Content>
+                    <Input placeholder="Year" />
+                    <Dropdown>
+                        <Dropdown.Button flat> Genre </Dropdown.Button>
+                        <Dropdown.Menu aria-label="Static Actions">
+                            <Dropdown.Item key="new">New file</Dropdown.Item>
+                            <Dropdown.Item key="copy">Copy link</Dropdown.Item>
+                            <Dropdown.Item key="edit">Edit file</Dropdown.Item>
+                            <Dropdown.Item key="delete" color="error">
+                                Delete file
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </Navbar.Content>
+            </Navbar>
+            <main className={styles.page}>
+                {message ? message : `Found! Movie with title ${q} has ${movieData.total} results.`}
+                
+                <Grid.Container gap={2}>
+                    {movieData.movies.map((movie: any) => (
+                        <Grid>
+                            <Card className={styles.movieCard}>
+                                <Card.Header>
+                                    <p> {movie.Title} </p>
+                                </Card.Header>
+                                <Card.Body>
+
+                                </Card.Body>
+                            </Card>
+                        </Grid>
+                    ))}
+                </Grid.Container>
+            </main>
+            <Pagination total={movieData.total}/>
+        </>
     );
 }
