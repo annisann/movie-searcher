@@ -1,5 +1,5 @@
 import { getMovie } from '@/lib/searchMovie';
-import { Card, Dropdown, Grid, Input, Navbar, Pagination } from '@nextui-org/react';
+import { Badge, Card, Dropdown, Grid, Input, Navbar, Pagination, Spacer } from '@nextui-org/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -49,8 +49,9 @@ interface ErrorResponse {
 
 export default function Movies() {
     const router = useRouter();
-    const { q } = router.query; // search query
+    let { q } = router.query; // search query
 
+    const [page, setPage] = useState(1)
     const [message, setMessage] = useState("")
     const [isLoading, setIsLoading] = useState(true)
     const [movieData, setMovieData] = useState<SearchResponse>({
@@ -61,7 +62,7 @@ export default function Movies() {
 
     const fetchMovies = async () => {
         // Get movies from IMDB API by search query
-        getMovie(q)
+        getMovie(q, page)
             .then((result: any) => {
                 // Display error message if request failed.
                 "Error" in result ?
@@ -78,8 +79,8 @@ export default function Movies() {
 
     useEffect(() => {
         fetchMovies()
-    }, [q])
-    
+    }, [page])
+
     return (
         <>
             <Navbar variant={"sticky"}>
@@ -87,7 +88,8 @@ export default function Movies() {
                     {/* <Image src="favicon.svg" alt="logo" width={20} height={20} /> */}
                 </Navbar.Brand>
                 <Navbar.Content>
-                    <Input placeholder="Movie title" />
+                    <Input
+                        placeholder="Movie title" />
                 </Navbar.Content>
                 <Navbar.Content>
                     <Input placeholder="Year" />
@@ -106,23 +108,35 @@ export default function Movies() {
             </Navbar>
             <main className={styles.page}>
                 {message ? message : `Found! Movie with title ${q} has ${movieData.total} results.`}
-                
+
                 <Grid.Container gap={2}>
                     {movieData.movies.map((movie: any) => (
                         <Grid>
-                            <Card className={styles.movieCard}>
-                                <Card.Header>
-                                    <p> {movie.Title} </p>
+                            <Card
+                                key={movie.imdbID}
+                                aria-label={`${movie.imdbID}-${movie.year}`}
+                                className={styles.movieCard}>
+                                <Card.Header className={styles.poster}>
+                                    <Image
+                                        src={movie.Poster !== "N/A" ? movie.Poster : ""}
+                                        alt="movie poster"
+                                        width={140} height={160} />
                                 </Card.Header>
                                 <Card.Body>
-
+                                    <p className={styles.title}> {movie.Title} ({movie.Year}) </p>
+                                    <Badge> {movie.Type} </Badge>
                                 </Card.Body>
                             </Card>
                         </Grid>
                     ))}
                 </Grid.Container>
+                <Pagination
+                    className={styles.pagination}
+                    onChange={(page: number) => setPage(page)}
+                    color={"gradient"}
+                    total={movieData.total} />
             </main>
-            <Pagination total={movieData.total}/>
+            <Spacer />
         </>
     );
 }
