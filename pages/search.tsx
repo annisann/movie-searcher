@@ -22,7 +22,7 @@ export default function Movies() {
         response: false
     })
     const [isMovieDetailOpen, setIsMovieDetailOpen] = useState(false)
-    const [clickedMovie, setClickedMovie] = useState<Movie | MovieDetail>({
+    const [clickedMovie, setClickedMovie] = useState<MovieDetail>({
         title: "",
         year: 0,
         imdbID: "",
@@ -40,14 +40,14 @@ export default function Movies() {
         country: "",
         awards: "",
         ratings: [],
-        metascore: "", // "82"
-        imdbRating: "", // "9.3"
-        imdbVotes: "", // "2,718,502"
-        dvd: "", // "21 Dec 1999"
-        boxOffice: "", // "$28,767,189"
+        metascore: "",
+        imdbRating: "",
+        imdbVotes: "",
+        dvd: "",
+        boxOffice: "",
         production: "",
         website: "",
-        response: false // "True"
+        response: false
     })
 
     // Get movies from IMDB API by search query.
