@@ -16,7 +16,7 @@ export const MovieDetailModal = ({
     return (
         <Modal
             noPadding
-            className={styles['modal-container']}
+            className={styles.modalContainer}
             open={isOpen}
             onClose={() => setIsOpen(!isOpen)}>
             <Modal.Header className={styles['modal-header-container']}>
