@@ -14,7 +14,7 @@
 
 .movieCard {
     width: 220px;
-    height: 340px;
+    height: 300px;
 }
 
 .movieCard .poster {
@@ -25,6 +25,13 @@
 .movieCard .title {
     font-size: 14px;
     font-weight: 500;
+}
+
+.movieCard .cardBody {
+    padding-top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 /* MOVIE DETAILS */

@@ -1,9 +1,19 @@
-import { getMovie, getMovieById } from '@/lib/searchMovie';
-import { Badge, Card, Dropdown, Grid, Input, Loading, Modal, Navbar, Pagination, PressEvent, Spacer } from '@nextui-org/react';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
 import styles from '@/styles/movies.module.css'
+import Image from 'next/image';
+import { getMovie, getMovieById } from '@/lib/searchMovie';
+import {
+    Badge,
+    Card,
+    Dropdown,
+    Grid,
+    Input,
+    Loading,
+    Navbar,
+    Pagination,
+    Spacer
+} from '@nextui-org/react';
+import { useRouter } from 'next/router';
+import { useEffect, useMemo, useState } from 'react';
 import { MovieDetail, SearchResponse } from '@/lib/interfaces';
 import { MovieDetailModal } from '@/components/movieDetail';
 
@@ -49,6 +59,13 @@ export default function Movies() {
         website: "",
         response: false
     })
+    const [selectedType, setSelectedType] = useState(new Set(["Type"]));
+
+    const selectedTypeValue = useMemo(() =>
+        // If type is unselected, will display it's original value: `Type`
+        Array.from(selectedType).length !== 0 ? Array.from(selectedType).join(", ").replaceAll("_", " ") : "Type",
+        [selectedType]
+    );
 
     // Get movies from IMDB API by search query.
     const fetchMovies = async () => {
@@ -132,15 +149,24 @@ export default function Movies() {
                 <Navbar.Content>
                     <Input placeholder="Year" />
                     <Dropdown>
-                        <Dropdown.Button color={"primary"} flat> Type </Dropdown.Button>
-                        <Dropdown.Menu aria-label="Static Actions">
-                            <Dropdown.Item key="movie"> Movie </Dropdown.Item>
-                            <Dropdown.Item key="series"> Series </Dropdown.Item>
-                            <Dropdown.Item key="episode"> Episode </Dropdown.Item>
+                        <Dropdown.Button
+                            bordered
+                            color={"primary"}>
+                            {selectedTypeValue ? selectedTypeValue : "Type"}
+                        </Dropdown.Button>
+                        <Dropdown.Menu
+                            selectionMode="single"
+                            selectedKeys={selectedType}
+                            onSelectionChange={(keys: any) => setSelectedType(keys)}
+                            aria-label="type action">
+                            <Dropdown.Item key="Movie"> Movie </Dropdown.Item>
+                            <Dropdown.Item key="Series"> Series </Dropdown.Item>
+                            <Dropdown.Item key="Episode"> Episode </Dropdown.Item>
+                            <Dropdown.Item key="" color="error"> Clear selection </Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Navbar.Content>
-            </Navbar>
+            </Navbar >
             <main className={styles.page}>
                 {message ? message : `Search on title "${q}" has a total of ${movieData.total} results.`}
 
@@ -160,22 +186,24 @@ export default function Movies() {
                                             alt="movie poster"
                                             width={140} height={160} />
                                     </Card.Header>
-                                    <Card.Body>
-                                        <p className={styles.title}> {movie.Title} ({movie.Year}) </p>
+                                    <Card.Body className={styles.cardBody}>
                                         <Badge
                                             size={"xs"}
                                             disableOutline
                                             variant={"bordered"}
                                             color={"primary"}> {movie.Type} </Badge>
+                                        <p className={styles.title}> {movie.Title} ({movie.Year}) </p>
                                     </Card.Body>
                                 </Card>
                             </Grid>
                         ))}
                 </Grid.Container>
                 <Pagination
+                    bordered
+                    rounded
                     className={styles.pagination}
                     onChange={(page: number) => setPage(page)}
-                    color={"gradient"}
+                    color={"primary"}
                     total={Math.ceil(movieData.total / amountContents)} />
             </main>
             <Spacer />
