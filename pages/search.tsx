@@ -4,48 +4,9 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import styles from '@/styles/movies.module.css'
+import { Movie, MovieDetail, SearchResponse } from '@/lib/interfaces';
+import { MovieDetailModal } from '@/components/movieDetail';
 
-interface Movie {
-    title: string;
-    year: number;
-    imdbID: string;
-    type: string;
-    poster: string;
-}
-
-interface MovieDetail extends Movie {
-    rated: string;
-    released: string;
-    runtime: string;
-    genre: string;
-    director: string;
-    writer: string;
-    actors: string;
-    plot: string;
-    language: string;
-    country: string;
-    awards: string;
-    ratings: [];
-    metascore: string; // "82"
-    imdbRating: string; // "9.3"
-    imdbVotes: string; // "2,718,502"
-    dvd: string; // "21 Dec 1999"
-    boxOffice: string; // "$28,767,189"
-    production: string;
-    website: string;
-    response: boolean // "True"
-}
-
-interface SearchResponse {
-    movies: Movie[];
-    total: number;
-    response: boolean;
-}
-
-interface ErrorResponse {
-    Response: string;
-    Error: string;
-}
 
 export default function Movies() {
     const router = useRouter();
@@ -214,15 +175,11 @@ export default function Movies() {
                     total={movieData.total / amountContents} />
             </main>
             <Spacer />
-            <Modal
-                open={isMovieDetailOpen}
-                onClose={() => setIsMovieDetailOpen(!isMovieDetailOpen)}>
-                <Image
-                    src={clickedMovie.poster !== "N/A" ? clickedMovie.poster : ""}
-                    alt="movie poster"
-                    width={140} height={160} />
-                <p> {clickedMovie?.title}</p>
-            </Modal>
+            <MovieDetailModal
+                isOpen={isMovieDetailOpen}
+                setIsOpen={setIsMovieDetailOpen}
+                data={clickedMovie}
+            />
         </>
     );
 }
