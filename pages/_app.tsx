@@ -6,9 +6,11 @@ const theme = createTheme({
   type: "dark",
   theme: {
     colors: {
-      primary: '#4ADE7B',
-      secondary: '#F9CB80',
-      error: '#FCC5D8',
+      primary: '#ADD8E6',
+      secondary: '#663399',
+      error: '#A52A2A',
+      success: '#98FB98',
+      warning: '#F0E68C'
     },
   }
 })
