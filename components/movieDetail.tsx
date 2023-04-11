@@ -15,6 +15,7 @@ export const MovieDetailModal = ({
 }) => {
     return (
         <Modal
+            width={"500px"}
             noPadding
             className={styles['modal-container']}
             open={isOpen}
@@ -27,15 +28,29 @@ export const MovieDetailModal = ({
                 <div>
                     <div className={styles['modal-header-container--title']}>
                         <p className={styles['header-title']}> {data?.title} ({data?.year}) </p>
-                        <Badge>
-                            <p className={styles.rated}> {data?.rated} </p>
+                        <Badge className={styles['header-badge']} color={"success"} variant={"bordered"}>
+                            {data?.rated}
                         </Badge>
                     </div>
                     <div className={styles['modal-header-container--body']}>
                         <p className={styles.type}> {data?.type}, {data?.runtime} </p>
-                        <p className={styles.genre}> Genre: {data?.genre} </p>
-                        <p className={styles.director}> Director: {data?.director} </p>
-                        <p className={styles.actor}> Actor: {data?.actors} </p>
+                        <p className={styles.genre}>
+                            <span className={styles.highlighted}>
+                                {"Genre: "}
+                            </span>
+                            {data?.genre}
+                        </p>
+                        <p className={styles.director}>
+                            <span className={styles.highlighted}>
+                                {"Director: "}
+                            </span>
+                            {data?.director}
+                        </p>
+                        <p className={styles.actor}>
+                            <span className={styles.highlighted}>
+                                {"Actor: "}
+                            </span>
+                            {data?.actors} </p>
                     </div>
                 </div>
             </Modal.Header >
@@ -45,13 +60,13 @@ export const MovieDetailModal = ({
                 </div>
                 <div className={styles['modal-body-container--body']}>
                     <div>
-                        <p> Language: {data?.language} </p>
-                        <p> Released: {data?.released} </p>
-                        <p> Country: {data?.country} </p>
+                        <p> <span className={styles.highlighted}>Language:</span> {data?.language} </p>
+                        <p> <span className={styles.highlighted}>Released:</span> {data?.released} </p>
+                        <p> <span className={styles.highlighted}>Country:</span> {data?.country} </p>
                     </div>
-                    <p> IMDB Rating: {data?.imdbRating} </p>
+                    <p> <span className={styles.highlighted}>IMDB Rating:</span> {data?.imdbRating} </p>
                 </div>
             </Modal.Body>
-        </Modal>
+        </Modal >
     )
 }

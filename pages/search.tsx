@@ -132,7 +132,7 @@ export default function Movies() {
                 <Navbar.Content>
                     <Input placeholder="Year" />
                     <Dropdown>
-                        <Dropdown.Button flat> Type </Dropdown.Button>
+                        <Dropdown.Button color={"primary"} flat> Type </Dropdown.Button>
                         <Dropdown.Menu aria-label="Static Actions">
                             <Dropdown.Item key="movie"> Movie </Dropdown.Item>
                             <Dropdown.Item key="series"> Series </Dropdown.Item>
@@ -162,7 +162,11 @@ export default function Movies() {
                                     </Card.Header>
                                     <Card.Body>
                                         <p className={styles.title}> {movie.Title} ({movie.Year}) </p>
-                                        <Badge> {movie.Type} </Badge>
+                                        <Badge
+                                            size={"xs"}
+                                            disableOutline
+                                            variant={"bordered"}
+                                            color={"primary"}> {movie.Type} </Badge>
                                     </Card.Body>
                                 </Card>
                             </Grid>

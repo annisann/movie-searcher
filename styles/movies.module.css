@@ -29,6 +29,10 @@
 
 /* MOVIE DETAILS */
 
+.highlighted {
+    color: #ADD8E6;
+}
+
 .modal-container {
     padding: 1rem;
     display: flex;
@@ -37,10 +41,7 @@
 
 .modal-container 
 .modal-header-container {
-    /* margin-right: 0.5rem; */
-    /* flex-direction: row; */
     gap: 1rem;
-    /* justify-content: left; */
 }
 
 .modal-container 
@@ -48,13 +49,23 @@
 .modal-header-container--title {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    gap: 0.5rem;
 }
 
 .modal-container 
 .modal-header-container 
 .modal-header-container--title 
 .header-title {
-    font-size: 18px;
+    font-size: 18px; 
+    text-align: left;   
+}
+
+.modal-container 
+.modal-header-container 
+.modal-header-container--title 
+.header-badge {
+    height: fit-content;    
 }
 
 .modal-container 
@@ -62,19 +73,19 @@
 .modal-header-container--body p{
     font-size: 13px;
     text-align: left; 
+    text-transform: capitalize;
 }
 
-
-#modal-container 
-#modal-body-container {
-    /* width: 33%; */
-    margin-left: 0.5rem;
+.modal-container 
+.modal-body-container {
+    margin-top: 1rem;
+    gap: 1rem;
 }
 
 .modal-container
 .modal-body-container
-.modal-body-container--head {
-    font-size: 12px;
+.modal-body-container--head p {
+    font-size: 14px;
 }
 
 .modal-container
@@ -83,4 +94,10 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+
+.modal-container
+.modal-body-container
+.modal-body-container--body p {
+    font-size:13px;
 }
