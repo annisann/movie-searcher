@@ -108,9 +108,9 @@ export default function Movies() {
                         website: result.Website,
                         response: result.Response
                     })
+                // Open modal that displays the movie detail.
+                setIsMovieDetailOpen(true)
             })
-        // Open modal that displays the movie detail.
-        setIsMovieDetailOpen(true)
     }
 
     console.log(clickedMovie)
