@@ -1,5 +1,5 @@
-import { getMovie } from '@/lib/searchMovie';
-import { Badge, Card, Dropdown, Grid, Input, Loading, Navbar, Pagination, Spacer } from '@nextui-org/react';
+import { getMovie, getMovieById } from '@/lib/searchMovie';
+import { Badge, Card, Dropdown, Grid, Input, Loading, Modal, Navbar, Pagination, PressEvent, Spacer } from '@nextui-org/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -60,15 +60,46 @@ export default function Movies() {
         total: 0,
         response: false
     })
+    const [isMovieDetailOpen, setIsMovieDetailOpen] = useState(false)
+    const [clickedMovie, setClickedMovie] = useState<Movie | MovieDetail>({
+        title: "",
+        year: 0,
+        imdbID: "",
+        type: "",
+        poster: "",
+        rated: "",
+        released: "",
+        runtime: "",
+        genre: "",
+        director: "",
+        writer: "",
+        actors: "",
+        plot: "",
+        language: "",
+        country: "",
+        awards: "",
+        ratings: [],
+        metascore: "", // "82"
+        imdbRating: "", // "9.3"
+        imdbVotes: "", // "2,718,502"
+        dvd: "", // "21 Dec 1999"
+        boxOffice: "", // "$28,767,189"
+        production: "",
+        website: "",
+        response: false // "True"
+    })
 
+    // Get movies from IMDB API by search query.
     const fetchMovies = async () => {
-        // Get movies from IMDB API by search query
+        // Display loader as data has not been fetched.
         setIsLoading(true)
+        // Fetch movies based on query and page.
         getMovie(q, page)
             .then((result: any) => {
                 // Display error message if request failed.
                 "Error" in result ?
-                    setMessage(result.Error) :
+                    setMessage(result.Error)
+                    : // Set movie data state from API response.
                     setMovieData({
                         ...movieData,
                         movies: result.Search,
@@ -78,6 +109,50 @@ export default function Movies() {
                 setIsLoading(false)
             })
     }
+
+    // Get details of selected movie from IMDB API.
+    const fetchMovieById = async (movie: any) => {
+        // Fetch movie detail based on its ID.
+        getMovieById(movie.imdbID)
+            .then((result: any) => {
+                // Display error message if request failed.
+                "Error" in result ?
+                    setMessage(result.Error)
+                    : // Set clicked card's data to state.
+                    setClickedMovie({
+                        ...clickedMovie,
+                        title: result.Title,
+                        year: result.Year,
+                        imdbID: result.imdbID,
+                        type: result.Type,
+                        poster: result.Poster,
+                        rated: result.Rated,
+                        released: result.Released,
+                        runtime: result.Runtime,
+                        genre: result.Genre,
+                        director: result.Director,
+                        writer: result.Writer,
+                        actors: result.Actors,
+                        plot: result.Plot,
+                        language: result.Language,
+                        country: result.Country,
+                        awards: result.Awards,
+                        ratings: result.Ratings,
+                        metascore: result.Metascore,
+                        imdbRating: result.imdbRating,
+                        imdbVotes: result.imdbVotes,
+                        dvd: result.DVD,
+                        boxOffice: result.BoxOffice,
+                        production: result.Production,
+                        website: result.Website,
+                        response: result.Response
+                    })
+            })
+        // Open modal that displays the movie detail.
+        setIsMovieDetailOpen(true)
+    }
+
+    console.log(clickedMovie)
 
     useEffect(() => {
         fetchMovies()
@@ -96,26 +171,25 @@ export default function Movies() {
                 <Navbar.Content>
                     <Input placeholder="Year" />
                     <Dropdown>
-                        <Dropdown.Button flat> Genre </Dropdown.Button>
+                        <Dropdown.Button flat> Type </Dropdown.Button>
                         <Dropdown.Menu aria-label="Static Actions">
-                            <Dropdown.Item key="new">New file</Dropdown.Item>
-                            <Dropdown.Item key="copy">Copy link</Dropdown.Item>
-                            <Dropdown.Item key="edit">Edit file</Dropdown.Item>
-                            <Dropdown.Item key="delete" color="error">
-                                Delete file
-                            </Dropdown.Item>
+                            <Dropdown.Item key="movie"> Movie </Dropdown.Item>
+                            <Dropdown.Item key="series"> Series </Dropdown.Item>
+                            <Dropdown.Item key="episode"> Episode </Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Navbar.Content>
             </Navbar>
             <main className={styles.page}>
-                {message ? message : `Found! Movie with title ${q} has ${movieData.total} results.`}
+                {message ? message : `Search on title "${q}" has a total of ${movieData.total} results.`}
 
                 <Grid.Container gap={2} className={styles.content}>
-                    {isLoading ? <Loading type='points'/>
+                    {isLoading ? <Loading type='points' />
                         : movieData.movies.map((movie: any) => (
                             <Grid>
                                 <Card
+                                    isPressable
+                                    onPress={() => fetchMovieById(movie)}
                                     key={movie.imdbID}
                                     aria-label={`${movie.imdbID}-${movie.year}`}
                                     className={styles.movieCard}>
@@ -137,9 +211,18 @@ export default function Movies() {
                     className={styles.pagination}
                     onChange={(page: number) => setPage(page)}
                     color={"gradient"}
-                    total={movieData.total/amountContents} />
+                    total={movieData.total / amountContents} />
             </main>
             <Spacer />
+            <Modal
+                open={isMovieDetailOpen}
+                onClose={() => setIsMovieDetailOpen(!isMovieDetailOpen)}>
+                <Image
+                    src={clickedMovie.poster !== "N/A" ? clickedMovie.poster : ""}
+                    alt="movie poster"
+                    width={140} height={160} />
+                <p> {clickedMovie?.title}</p>
+            </Modal>
         </>
     );
 }

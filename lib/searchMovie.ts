@@ -17,11 +17,11 @@ const getMovie = async (
             .then(async (response) => await response.json())
 }
 
-const getMovieById = async (id: number) => {
+const getMovieById = async (id: string) => {
     const url: string = baseUrl + `i=${id}` + apiKey
-    await fetch(url)
+
+    return await fetch(url)
         .then(async (response) => await response.json())
-        .then(result => result)
 }
 
 export {
