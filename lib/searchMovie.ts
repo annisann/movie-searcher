@@ -7,7 +7,7 @@ const getMovie = async (
     type?: string,
     year?: number) => {
         const titleQuery: string = `&s=${title}`
-        const pageQuery: string = `&p=${page}`
+        const pageQuery: string = `&page=${page}`
         const typeQuery: string = type? `&type=${type}` : ``
         const yearQuery: string = year? `&y=${year}`: ``
 
@@ -17,11 +17,11 @@ const getMovie = async (
             .then(async (response) => await response.json())
 }
 
-const getMovieById = async (id: number) => {
+const getMovieById = async (id: string) => {
     const url: string = baseUrl + `i=${id}` + apiKey
-    await fetch(url)
+
+    return await fetch(url)
         .then(async (response) => await response.json())
-        .then(result => result)
 }
 
 export {
