@@ -29,13 +29,13 @@
 
 /* MOVIE DETAILS */
 
-.modalContainer {
+.modal-container {
     padding: 1rem;
     display: flex;
     flex-direction: column;
 }
 
-.modalContainer 
+.modal-container 
 .modal-header-container {
     /* margin-right: 0.5rem; */
     /* flex-direction: row; */
@@ -43,21 +43,21 @@
     /* justify-content: left; */
 }
 
-.modalContainer 
+.modal-container 
 .modal-header-container 
 .modal-header-container--title {
     display: flex;
     flex-direction: row;
 }
 
-.modalContainer 
+.modal-container 
 .modal-header-container 
 .modal-header-container--title 
 .header-title {
     font-size: 18px;
 }
 
-.modalContainer 
+.modal-container 
 .modal-header-container
 .modal-header-container--body p{
     font-size: 13px;
@@ -65,19 +65,19 @@
 }
 
 
-#modalContainer 
+#modal-container 
 #modal-body-container {
     /* width: 33%; */
     margin-left: 0.5rem;
 }
 
-.modalContainer
+.modal-container
 .modal-body-container
 .modal-body-container--head {
     font-size: 12px;
 }
 
-.modalContainer
+.modal-container
 .modal-body-container
 .modal-body-container--body {
     display: flex;
