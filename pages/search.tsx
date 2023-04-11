@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import styles from '@/styles/movies.module.css'
-import { Movie, MovieDetail, SearchResponse } from '@/lib/interfaces';
+import { MovieDetail, SearchResponse } from '@/lib/interfaces';
 import { MovieDetailModal } from '@/components/movieDetail';
 
 
@@ -172,7 +172,7 @@ export default function Movies() {
                     className={styles.pagination}
                     onChange={(page: number) => setPage(page)}
                     color={"gradient"}
-                    total={movieData.total / amountContents} />
+                    total={Math.ceil(movieData.total / amountContents)} />
             </main>
             <Spacer />
             <MovieDetailModal

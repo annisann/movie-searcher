@@ -9,6 +9,7 @@
 .content {
     min-height: 90vh;
     height: auto;
+    justify-content: center;
 }
 
 .movieCard {
@@ -26,3 +27,60 @@
     font-weight: 500;
 }
 
+/* MOVIE DETAILS */
+
+.modalContainer {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.modalContainer 
+.modal-header-container {
+    /* margin-right: 0.5rem; */
+    /* flex-direction: row; */
+    gap: 1rem;
+    /* justify-content: left; */
+}
+
+.modalContainer 
+.modal-header-container 
+.modal-header-container--title {
+    display: flex;
+    flex-direction: row;
+}
+
+.modalContainer 
+.modal-header-container 
+.modal-header-container--title 
+.header-title {
+    font-size: 18px;
+}
+
+.modalContainer 
+.modal-header-container
+.modal-header-container--body p{
+    font-size: 13px;
+    text-align: left; 
+}
+
+
+#modalContainer 
+#modal-body-container {
+    /* width: 33%; */
+    margin-left: 0.5rem;
+}
+
+.modalContainer
+.modal-body-container
+.modal-body-container--head {
+    font-size: 12px;
+}
+
+.modalContainer
+.modal-body-container
+.modal-body-container--body {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
