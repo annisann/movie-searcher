@@ -74,12 +74,15 @@ export default function Movies() {
         [selectedType]
     )
 
+    // Year value on navbar
+    const [year, setYear] = useState(0)
+
     // Get movies from IMDB API by search query.
     const fetchMovies = async () => {
         // Display loader as data has not been fetched.
         setIsLoading(true)
         // Fetch movies based on query and page.
-        getMovie(searchQuery, page, typeValue)
+        getMovie(searchQuery, page, typeValue, year)
             .then((result: any) => {
                 // Display error message if request failed.
                 "Error" in result ?
@@ -140,13 +143,16 @@ export default function Movies() {
     // Will call `fetchMovies()` function on query and page change.
     useEffect(() => {
         fetchMovies()
-    }, [page, typeValue])
+    }, [page, typeValue, year])
 
     const handleSearch = () => {
+        // Set the url.
+        const searchUrl: string = year ? `q=${searchQuery}&y=${year}` : `q=${searchQuery}`
+
         // Will make request when button is clicked and update the url.
         router.push({
             pathname: "/search",
-            search: `q=${searchQuery}`,
+            search: searchUrl,
         })
         fetchMovies()
     }
@@ -155,6 +161,8 @@ export default function Movies() {
         <>
             <NavBar
                 handleSearch={handleSearch}
+                year={year}
+                setYear={setYear}
                 selectedType={selectedType}
                 typeValue={typeValue}
                 setSearchQuery={setSearchQuery}

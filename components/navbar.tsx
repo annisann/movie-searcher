@@ -1,9 +1,11 @@
 import { Navbar, Input, Dropdown, FormElement, Button } from "@nextui-org/react";
-import { ChangeEvent, Dispatch, SetStateAction, useMemo } from "react";
+import { ChangeEvent, Dispatch, FormEvent, FormEventHandler, KeyboardEventHandler, SetStateAction, useMemo } from "react";
 
 export default function NavBar(props: {
     selectedType: Set<string>,
     typeValue: string,
+    year: number,
+    setYear: Dispatch<SetStateAction<number>>,
     setSelectedType: Dispatch<SetStateAction<Set<string>>>,
     setSearchQuery: Dispatch<SetStateAction<any>>,
     handleSearch: () => void
@@ -11,6 +13,8 @@ export default function NavBar(props: {
     const {
         selectedType,
         typeValue,
+        year,
+        setYear,
         setSelectedType,
         setSearchQuery,
         handleSearch } = props
@@ -31,7 +35,15 @@ export default function NavBar(props: {
                 </Button>
             </Navbar.Content>
             <Navbar.Content>
-                <Input placeholder="Year" />
+                <Input
+                    onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                        const input = e.target as HTMLInputElement
+                        if(e.key == "Enter") {
+                            setYear(+input.value)
+                            handleSearch
+                        }
+                    }}
+                    placeholder="Year" />
                 <Dropdown>
                     <Dropdown.Button
                         bordered
