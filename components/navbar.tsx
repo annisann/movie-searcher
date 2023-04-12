@@ -1,5 +1,5 @@
 import { Navbar, Input, Dropdown, FormElement, Button } from "@nextui-org/react";
-import { ChangeEvent, Dispatch, FormEvent, FormEventHandler, KeyboardEventHandler, SetStateAction, useMemo } from "react";
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
 
 export default function NavBar(props: {
     selectedType: Set<string>,

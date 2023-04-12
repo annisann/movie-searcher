@@ -94,12 +94,15 @@ export default function Movies() {
                         total: +result.totalResults,
                         response: result.Response === "True"
                     })
+                // Set loading as false as data has been fetched.
                 setIsLoading(false)
             })
     }
 
     // Get details of selected movie from IMDB API.
     const fetchMovieById = async (movie: any) => {
+        // Display loader as data has not been fetched.
+        setIsLoading(true)
         // Fetch movie detail based on its ID.
         getMovieById(movie.imdbID)
             .then((result: any) => {
@@ -135,6 +138,8 @@ export default function Movies() {
                         website: result.Website,
                         response: result.Response
                     })
+                // Set loading as false as data has been fetched.
+                setIsLoading(false)
                 // Open modal that displays the movie detail.
                 setIsMovieDetailOpen(true)
             })
@@ -144,6 +149,12 @@ export default function Movies() {
     useEffect(() => {
         fetchMovies()
     }, [page, typeValue, year])
+
+    const loading = () => {
+        return (
+            <Loading className={styles.loader} type='points' />
+        )
+    }
 
     const handleSearch = () => {
         // Set the url.
@@ -168,35 +179,34 @@ export default function Movies() {
                 setSearchQuery={setSearchQuery}
                 setSelectedType={setSelectedType} />
             <main className={styles.page}>
+                {isLoading ? loading() : null}
                 {message ? message : `Search on title "${searchQuery}" has a total of ${movieData.total} results.`}
-
                 <Grid.Container gap={2} className={styles.content}>
-                    {isLoading ? <Loading type='points' />
-                        : movieData.movies.map((movie: any) => (
-                            <Grid>
-                                <Card
-                                    isPressable
-                                    onPress={() => fetchMovieById(movie)}
-                                    key={movie.imdbID}
-                                    aria-label={`${movie.imdbID}-${movie.year}`}
-                                    className={styles.movieCard}>
-                                    <Card.Header className={styles.poster}>
-                                        <Image
-                                            src={movie.Poster !== "N/A" ? movie.Poster : ""}
-                                            alt="movie poster"
-                                            width={140} height={160} />
-                                    </Card.Header>
-                                    <Card.Body className={styles.cardBody}>
-                                        <Badge
-                                            size={"xs"}
-                                            disableOutline
-                                            variant={"bordered"}
-                                            color={"primary"}> {movie.Type} </Badge>
-                                        <p className={styles.title}> {movie.Title} ({movie.Year}) </p>
-                                    </Card.Body>
-                                </Card>
-                            </Grid>
-                        ))}
+                    {movieData.movies.map((movie: any) => (
+                        <Grid>
+                            <Card
+                                isPressable
+                                onPress={() => fetchMovieById(movie)}
+                                key={movie.imdbID}
+                                aria-label={`${movie.imdbID}-${movie.year}`}
+                                className={styles.movieCard}>
+                                <Card.Header className={styles.poster}>
+                                    <Image
+                                        src={movie.Poster !== "N/A" ? movie.Poster : ""}
+                                        alt="movie poster"
+                                        width={140} height={160} />
+                                </Card.Header>
+                                <Card.Body className={styles.cardBody}>
+                                    <Badge
+                                        size={"xs"}
+                                        disableOutline
+                                        variant={"bordered"}
+                                        color={"primary"}> {movie.Type} </Badge>
+                                    <p className={styles.title}> {movie.Title} ({movie.Year}) </p>
+                                </Card.Body>
+                            </Card>
+                        </Grid>
+                    ))}
                 </Grid.Container>
                 <Pagination
                     bordered
@@ -207,10 +217,11 @@ export default function Movies() {
                     total={Math.ceil(movieData.total / amountContents)} />
             </main>
             <Spacer />
-            <MovieDetailModal
-                isOpen={isMovieDetailOpen}
-                setIsOpen={setIsMovieDetailOpen}
-                data={clickedMovie} />
+            {isLoading ? loading()
+                : <MovieDetailModal
+                    isOpen={isMovieDetailOpen}
+                    setIsOpen={setIsMovieDetailOpen}
+                    data={clickedMovie} />}
         </>
     );
 }
