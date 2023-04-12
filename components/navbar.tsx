@@ -30,7 +30,7 @@ export default function NavBar(props: {
                     placeholder="Movie title"
                     contentRight={
                         <Image
-                            src="/magnifierIcon.svg"
+                            src="magnifierIcon.svg"
                             alt="search"
                             width={24}
                             height={24} />
