@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { Navbar, Input, Dropdown, FormElement, Button } from "@nextui-org/react";
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
 
@@ -18,7 +19,7 @@ export default function NavBar(props: {
         setSelectedType,
         setSearchQuery,
         handleSearch } = props
-        
+
     return (
         <Navbar variant={"sticky"}>
             <Navbar.Brand>
@@ -26,19 +27,27 @@ export default function NavBar(props: {
             </Navbar.Brand>
             <Navbar.Content>
                 <Input
-                    onChange={(e: ChangeEvent<FormElement>) => setSearchQuery(e.target.value)}
-                    placeholder="Movie title" />
-                <Button
-                    auto
-                    onPress={handleSearch}>
-                    search
-                </Button>
+                    placeholder="Movie title"
+                    contentRight={
+                        <Image
+                            src="/magnifierIcon.svg"
+                            alt="search"
+                            width={24}
+                            height={24} />
+                    }
+                    onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                        const input = e.target as HTMLInputElement
+                        if (e.key == "Enter") {
+                            setSearchQuery(input.value)
+                            handleSearch
+                        }
+                    }} />
             </Navbar.Content>
             <Navbar.Content>
                 <Input
                     onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                         const input = e.target as HTMLInputElement
-                        if(e.key == "Enter") {
+                        if (e.key == "Enter") {
                             setYear(+input.value)
                             handleSearch
                         }

@@ -148,7 +148,7 @@ export default function Movies() {
     // Will call `fetchMovies()` function on query and page change.
     useEffect(() => {
         fetchMovies()
-    }, [page, typeValue, year])
+    }, [page, typeValue, year, searchQuery])
 
     const loading = () => {
         return (
