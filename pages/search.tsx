@@ -1,37 +1,44 @@
 import styles from '@/styles/movies.module.css'
 import Image from 'next/image';
+import NavBar from '@/components/navbar';
 import { getMovie, getMovieById } from '@/lib/searchMovie';
-import {
-    Badge,
-    Card,
-    Dropdown,
-    Grid,
-    Input,
-    Loading,
-    Navbar,
-    Pagination,
-    Spacer
-} from '@nextui-org/react';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import { MovieDetail, SearchResponse } from '@/lib/interfaces';
 import { MovieDetailModal } from '@/components/movieDetail';
-
+import {
+    Badge,
+    Card,
+    Grid,
+    Loading,
+    Pagination,
+    Spacer
+} from '@nextui-org/react';
 
 export default function Movies() {
     const router = useRouter();
+    // Content per page. The default value from IMDB Open API is 10 and we cannot change it.
     const amountContents = 10
-    let { q } = router.query; // search query
 
-    const [page, setPage] = useState(1)
-    const [message, setMessage] = useState("")
-    const [isLoading, setIsLoading] = useState(false)
+    // Search query
+    let { q } = router.query; // from landing page
+    const [searchQuery, setSearchQuery] = useState(q)
+
+    // Set current page number for pagination and making request purposes.
+    const [page, setPage] = useState<number>(1)
+    // TODO: Message if there's something wrong e.g in request
+    const [message, setMessage] = useState<string>("")
+    // This state shows whether the loader will show or not.
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    // API response for movie searching in a state.
     const [movieData, setMovieData] = useState<SearchResponse>({
         movies: [],
         total: 0,
         response: false
     })
-    const [isMovieDetailOpen, setIsMovieDetailOpen] = useState(false)
+    // Clicked movie card will display a modal. This state shows whether the movie card is clicked or not.
+    const [isMovieDetailOpen, setIsMovieDetailOpen] = useState<boolean>(false)
+    // Movie detail of clicked movie card.
     const [clickedMovie, setClickedMovie] = useState<MovieDetail>({
         title: "",
         year: 0,
@@ -59,20 +66,15 @@ export default function Movies() {
         website: "",
         response: false
     })
+    // `Type` dropdown on navbar: movie | series | episode 
     const [selectedType, setSelectedType] = useState(new Set(["Type"]));
-
-    const selectedTypeValue = useMemo(() =>
-        // If type is unselected, will display it's original value: `Type`
-        Array.from(selectedType).length !== 0 ? Array.from(selectedType).join(", ").replaceAll("_", " ") : "Type",
-        [selectedType]
-    );
 
     // Get movies from IMDB API by search query.
     const fetchMovies = async () => {
         // Display loader as data has not been fetched.
         setIsLoading(true)
         // Fetch movies based on query and page.
-        getMovie(q, page)
+        getMovie(searchQuery, page)
             .then((result: any) => {
                 // Display error message if request failed.
                 "Error" in result ?
@@ -130,45 +132,29 @@ export default function Movies() {
             })
     }
 
-    console.log(clickedMovie)
-
+    // Will call `fetchMovies()` function on query and page change.
     useEffect(() => {
         fetchMovies()
-    }, [q, page])
+    }, [page])
+
+    const handleSearch = () => {
+        // Will make request when button is clicked and update the url.
+        router.push({
+            pathname: "/search",
+            search: `q=${searchQuery}`,
+        })
+        fetchMovies()
+    }
 
     return (
         <>
-            <Navbar variant={"sticky"}>
-                <Navbar.Brand>
-                    {/* <Image src="favicon.svg" alt="logo" width={20} height={20} /> */}
-                </Navbar.Brand>
-                <Navbar.Content>
-                    <Input
-                        placeholder="Movie title" />
-                </Navbar.Content>
-                <Navbar.Content>
-                    <Input placeholder="Year" />
-                    <Dropdown>
-                        <Dropdown.Button
-                            bordered
-                            color={"primary"}>
-                            {selectedTypeValue ? selectedTypeValue : "Type"}
-                        </Dropdown.Button>
-                        <Dropdown.Menu
-                            selectionMode="single"
-                            selectedKeys={selectedType}
-                            onSelectionChange={(keys: any) => setSelectedType(keys)}
-                            aria-label="type action">
-                            <Dropdown.Item key="Movie"> Movie </Dropdown.Item>
-                            <Dropdown.Item key="Series"> Series </Dropdown.Item>
-                            <Dropdown.Item key="Episode"> Episode </Dropdown.Item>
-                            <Dropdown.Item key="" color="error"> Clear selection </Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                </Navbar.Content>
-            </Navbar >
+            <NavBar
+                handleSearch={handleSearch}
+                selectedType={selectedType}
+                setSearchQuery={setSearchQuery}
+                setSelectedType={setSelectedType} />
             <main className={styles.page}>
-                {message ? message : `Search on title "${q}" has a total of ${movieData.total} results.`}
+                {message ? message : `Search on title "${searchQuery}" has a total of ${movieData.total} results.`}
 
                 <Grid.Container gap={2} className={styles.content}>
                     {isLoading ? <Loading type='points' />
@@ -210,8 +196,7 @@ export default function Movies() {
             <MovieDetailModal
                 isOpen={isMovieDetailOpen}
                 setIsOpen={setIsMovieDetailOpen}
-                data={clickedMovie}
-            />
+                data={clickedMovie} />
         </>
     );
 }
