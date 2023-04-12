@@ -67,14 +67,19 @@ export default function Movies() {
         response: false
     })
     // `Type` dropdown on navbar: movie | series | episode 
-    const [selectedType, setSelectedType] = useState(new Set(["Type"]));
+    const [selectedType, setSelectedType] = useState(new Set(["type"]));
+    const typeValue = useMemo(() =>
+        // If type is unselected, will display it's original value: `type`
+        Array.from(selectedType).length !== 0 ? Array.from(selectedType).join(", ").replaceAll("_", " ") : "type",
+        [selectedType]
+    )
 
     // Get movies from IMDB API by search query.
     const fetchMovies = async () => {
         // Display loader as data has not been fetched.
         setIsLoading(true)
         // Fetch movies based on query and page.
-        getMovie(searchQuery, page)
+        getMovie(searchQuery, page, typeValue)
             .then((result: any) => {
                 // Display error message if request failed.
                 "Error" in result ?
@@ -135,7 +140,7 @@ export default function Movies() {
     // Will call `fetchMovies()` function on query and page change.
     useEffect(() => {
         fetchMovies()
-    }, [page])
+    }, [page, typeValue])
 
     const handleSearch = () => {
         // Will make request when button is clicked and update the url.
@@ -151,6 +156,7 @@ export default function Movies() {
             <NavBar
                 handleSearch={handleSearch}
                 selectedType={selectedType}
+                typeValue={typeValue}
                 setSearchQuery={setSearchQuery}
                 setSelectedType={setSelectedType} />
             <main className={styles.page}>

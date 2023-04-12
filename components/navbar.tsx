@@ -1,18 +1,20 @@
-import { Navbar, Input, Dropdown, FormElement, Button, PressEvent } from "@nextui-org/react";
+import { Navbar, Input, Dropdown, FormElement, Button } from "@nextui-org/react";
 import { ChangeEvent, Dispatch, SetStateAction, useMemo } from "react";
 
-export default function NavBar({ selectedType, setSelectedType, setSearchQuery, handleSearch }: {
+export default function NavBar(props: {
     selectedType: Set<string>,
+    typeValue: string,
     setSelectedType: Dispatch<SetStateAction<Set<string>>>,
     setSearchQuery: Dispatch<SetStateAction<any>>,
     handleSearch: () => void
 }) {
-    const selectedTypeValue = useMemo(() =>
-        // If type is unselected, will display it's original value: `Type`
-        Array.from(selectedType).length !== 0 ? Array.from(selectedType).join(", ").replaceAll("_", " ") : "Type",
-        [selectedType]
-    )
-
+    const {
+        selectedType,
+        typeValue,
+        setSelectedType,
+        setSearchQuery,
+        handleSearch } = props
+        
     return (
         <Navbar variant={"sticky"}>
             <Navbar.Brand>
@@ -34,17 +36,16 @@ export default function NavBar({ selectedType, setSelectedType, setSearchQuery, 
                     <Dropdown.Button
                         bordered
                         color={"primary"}>
-                        {selectedTypeValue ? selectedTypeValue : "Type"}
+                        {typeValue ? typeValue.toUpperCase() : "type"}
                     </Dropdown.Button>
                     <Dropdown.Menu
                         selectionMode="single"
                         selectedKeys={selectedType}
                         onSelectionChange={(keys: any) => setSelectedType(keys)}
                         aria-label="type action">
-                        <Dropdown.Item key="Movie"> Movie </Dropdown.Item>
-                        <Dropdown.Item key="Series"> Series </Dropdown.Item>
-                        <Dropdown.Item key="Episode"> Episode </Dropdown.Item>
-                        <Dropdown.Item key="" color="error"> Clear selection </Dropdown.Item>
+                        <Dropdown.Item key="movie"> Movie </Dropdown.Item>
+                        <Dropdown.Item key="series"> Series </Dropdown.Item>
+                        <Dropdown.Item key="episode"> Episode </Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
             </Navbar.Content>
