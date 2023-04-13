@@ -15,7 +15,7 @@ import {
     Spacer
 } from '@nextui-org/react';
 
-export async function getServerSideProps(context: any) {
+export async function getStaticProps(context: any) {
     const { query } = context || {};
     const { q, y, type } = query || {};
 
