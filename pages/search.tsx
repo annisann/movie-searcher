@@ -15,7 +15,7 @@ import {
     Spacer
 } from '@nextui-org/react';
 
-export async function getStaticProps(context: any) {
+export async function getServerSideProps(context: any) {
     const { query } = context || {};
     const { q, y, type } = query || {};
 
@@ -27,7 +27,6 @@ export async function getStaticProps(context: any) {
         },
     };
 }
-
 
 export default function Search() {
     const router = useRouter();
