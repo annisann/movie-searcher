@@ -41,7 +41,7 @@ export default function Search() {
     // `Type` dropdown on navbar: movie | series | episode 
     const [selectedType, setSelectedType] = useState(new Set([type]));
     // Year value on navbar
-    const [year, setYear] = useState(y? +y : 0)
+    const [year, setYear] = useState(y ? +y : 0)
 
     // Set current page number for pagination and making request purposes.
     const [page, setPage] = useState<number>(1)
@@ -165,7 +165,7 @@ export default function Search() {
                 setIsMovieDetailOpen(true)
             })
     }
-    
+
     const handleSearch = () => {
         /**
          * To set URL and make request based on navbar values: movie title, year, and type.
@@ -174,19 +174,17 @@ export default function Search() {
         // Set the url.
         let searchUrl: string = searchQuery ? `q=${searchQuery}` : "?"
         if (year) searchUrl += `&y=${year}`
+        if (typeValue && typeValue !== "type") {
+            searchUrl += `&type=${typeValue}`;
+        }
 
-        type ? (
-            type !== typeValue && typeValue !== "type" ?
-                searchUrl += `&type=${typeValue}` : searchUrl += `&type=${type}`
-        ) : null
-
-        // Will make request when button is clicked and update the url.
+        // Update the url.
         router.push({
             pathname: "/search",
             search: searchUrl,
         })
+        // Make request.
         fetchMovies()
-
     }
 
     const loading = () => {
