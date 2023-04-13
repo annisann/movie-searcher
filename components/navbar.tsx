@@ -1,18 +1,20 @@
 import Image from 'next/image'
-import { Navbar, Input, Dropdown, FormElement, Button } from "@nextui-org/react";
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { Navbar, Input, Dropdown } from "@nextui-org/react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 export default function NavBar(props: {
-    selectedType: Set<string>,
+    selectedType: Set<any>,
+    searchQuery: any,
     typeValue: string,
     year: number,
     setYear: Dispatch<SetStateAction<number>>,
-    setSelectedType: Dispatch<SetStateAction<Set<string>>>,
+    setSelectedType: Dispatch<SetStateAction<Set<any>>>,
     setSearchQuery: Dispatch<SetStateAction<any>>,
     handleSearch: () => void
 }) {
     const {
         selectedType,
+        searchQuery,
         typeValue,
         year,
         setYear,
@@ -20,6 +22,11 @@ export default function NavBar(props: {
         setSearchQuery,
         handleSearch } = props
 
+    useEffect(() => {
+        // Make request and set the URL when there's changes on navbar values.
+        handleSearch()
+    }, [searchQuery, year, selectedType])
+    
     return (
         <Navbar variant={"sticky"}>
             <Navbar.Brand>
@@ -38,18 +45,18 @@ export default function NavBar(props: {
                     onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                         const input = e.target as HTMLInputElement
                         if (e.key == "Enter") {
-                            setSearchQuery(input.value)
-                            handleSearch
+                            // Will not send request if user does not input a movie title.
+                            if (input.value) setSearchQuery(input.value)
                         }
                     }} />
             </Navbar.Content>
             <Navbar.Content>
                 <Input
+                    clearable
                     onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                         const input = e.target as HTMLInputElement
                         if (e.key == "Enter") {
                             setYear(+input.value)
-                            handleSearch
                         }
                     }}
                     placeholder="Year" />

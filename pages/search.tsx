@@ -15,14 +15,34 @@ import {
     Spacer
 } from '@nextui-org/react';
 
-export default function Movies() {
+export async function getServerSideProps(context: any) {
+    const { query } = context || {};
+    const { q, y, type } = query || {};
+
+    return {
+        props: {
+            q: q || null,
+            y: y || null,
+            type: type || 'movie',
+        },
+    };
+}
+
+
+export default function Search() {
     const router = useRouter();
     // Content per page. The default value from IMDB Open API is 10 and we cannot change it.
     const amountContents = 10
 
-    // Search query
-    let { q } = router.query; // from landing page
-    const [searchQuery, setSearchQuery] = useState(q)
+    // Get the query parameter from URL.
+    const { q, y, type } = router.query || {};
+
+    // Search query.
+    const [searchQuery, setSearchQuery] = useState<any>(q)
+    // `Type` dropdown on navbar: movie | series | episode 
+    const [selectedType, setSelectedType] = useState(new Set([type]));
+    // Year value on navbar
+    const [year, setYear] = useState(y? +y : 0)
 
     // Set current page number for pagination and making request purposes.
     const [page, setPage] = useState<number>(1)
@@ -66,16 +86,18 @@ export default function Movies() {
         website: "",
         response: false
     })
-    // `Type` dropdown on navbar: movie | series | episode 
-    const [selectedType, setSelectedType] = useState(new Set(["type"]));
+
+    // Set type value on navbar based on `selectedType` state.
     const typeValue = useMemo(() =>
         // If type is unselected, will display it's original value: `type`
         Array.from(selectedType).length !== 0 ? Array.from(selectedType).join(", ").replaceAll("_", " ") : "type",
         [selectedType]
     )
 
-    // Year value on navbar
-    const [year, setYear] = useState(0)
+    // Will send request to API if page, year, and type values change.
+    useEffect(() => {
+        fetchMovies()
+    }, [page, typeValue, year])
 
     // Get movies from IMDB API by search query.
     const fetchMovies = async () => {
@@ -144,21 +166,20 @@ export default function Movies() {
                 setIsMovieDetailOpen(true)
             })
     }
-
-    // Will call `fetchMovies()` function on query and page change.
-    useEffect(() => {
-        fetchMovies()
-    }, [page, typeValue, year, searchQuery])
-
-    const loading = () => {
-        return (
-            <Loading className={styles.loader} type='points' />
-        )
-    }
-
+    
     const handleSearch = () => {
+        /**
+         * To set URL and make request based on navbar values: movie title, year, and type.
+         */
+
         // Set the url.
-        const searchUrl: string = year ? `q=${searchQuery}&y=${year}` : `q=${searchQuery}`
+        let searchUrl: string = searchQuery ? `q=${searchQuery}` : "?"
+        if (year) searchUrl += `&y=${year}`
+
+        type ? (
+            type !== typeValue && typeValue !== "type" ?
+                searchUrl += `&type=${typeValue}` : searchUrl += `&type=${type}`
+        ) : null
 
         // Will make request when button is clicked and update the url.
         router.push({
@@ -166,12 +187,20 @@ export default function Movies() {
             search: searchUrl,
         })
         fetchMovies()
+
+    }
+
+    const loading = () => {
+        return (
+            <Loading className={styles.loader} type='points' />
+        )
     }
 
     return (
         <>
             <NavBar
                 handleSearch={handleSearch}
+                searchQuery={searchQuery}
                 year={year}
                 setYear={setYear}
                 selectedType={selectedType}
