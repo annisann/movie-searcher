@@ -14,6 +14,7 @@ import {
     Pagination,
     Spacer
 } from '@nextui-org/react';
+import { typeColorMap } from '@/lib/colorHelper';
 
 export async function getServerSideProps(context: any) {
     const { query } = context || {};
@@ -227,7 +228,10 @@ export default function Search() {
                                         size={"xs"}
                                         disableOutline
                                         variant={"bordered"}
-                                        color={"primary"}> {movie.Type} </Badge>
+                                        css={{
+                                            borderColor: `$${typeColorMap[movie.Type]}`,
+                                            color: `$${typeColorMap[movie.Type]}`}}
+                                        > {movie.Type} </Badge>
                                     <p className={styles.title}> {movie.Title} ({movie.Year}) </p>
                                 </Card.Body>
                             </Card>
