@@ -2,7 +2,8 @@ import styles from "@/styles/movies.module.css"
 import Image from "next/image"
 import { Badge, Modal } from "@nextui-org/react"
 import { Dispatch, SetStateAction } from "react"
-import { Movie, MovieDetail } from "@/lib/interfaces"
+import { MovieDetail } from "@/lib/interfaces"
+import { isNotRated } from "@/lib/colorHelper"
 
 export const MovieDetailModal = ({
     isOpen,
@@ -28,7 +29,10 @@ export const MovieDetailModal = ({
                 <div>
                     <div className={styles['modal-header-container--title']}>
                         <p className={styles['header-title']}> {data?.title} ({data?.year}) </p>
-                        <Badge className={styles['header-badge']} color={"success"} variant={"bordered"}>
+                        <Badge
+                            variant={"bordered"}
+                            className={styles['header-badge']}
+                            color={isNotRated(data?.rated) ? "default": "success"}>
                             {data?.rated}
                         </Badge>
                     </div>
