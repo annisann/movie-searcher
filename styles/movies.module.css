@@ -6,6 +6,13 @@
     z-index: 9999; /* Higher than other elements */
 }
 
+.displayNoResult {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 80vh;
+}
+
 .page {
     padding-left: 2rem;
     padding-right: 2rem;
@@ -15,8 +22,9 @@
 }
 
 .content {
-    min-height: 90vh;
+    min-height: 80vh;
     height: auto;
+    margin-bottom: 1rem;
     justify-content: center;
 }
 

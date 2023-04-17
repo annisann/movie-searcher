@@ -18,7 +18,7 @@ export interface MovieDetail extends Movie {
     language: string;
     country: string;
     awards: string;
-    ratings: [];
+    ratings: string[];
     metascore: string; // "82"
     imdbRating: string; // "9.3"
     imdbVotes: string; // "2,718,502"

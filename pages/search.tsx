@@ -29,6 +29,40 @@ export async function getServerSideProps(context: any) {
     };
 }
 
+const initialSearchState = {
+    movies: [],
+    total: 0,
+    response: false
+}
+
+const initialMovieState = {
+    title: "",
+    year: 0,
+    imdbID: "",
+    type: "",
+    poster: "",
+    rated: "",
+    released: "",
+    runtime: "",
+    genre: "",
+    director: "",
+    writer: "",
+    actors: "",
+    plot: "",
+    language: "",
+    country: "",
+    awards: "",
+    ratings: [],
+    metascore: "",
+    imdbRating: "",
+    imdbVotes: "",
+    dvd: "",
+    boxOffice: "",
+    production: "",
+    website: "",
+    response: false
+}
+
 export default function Search() {
     const router = useRouter();
     // Content per page. The default value from IMDB Open API is 10 and we cannot change it.
@@ -46,46 +80,16 @@ export default function Search() {
 
     // Set current page number for pagination and making request purposes.
     const [page, setPage] = useState<number>(1)
-    // TODO: Message if there's something wrong e.g in request
+    // Message state for displaying purposes.
     const [message, setMessage] = useState<string>("")
     // This state shows whether the loader will show or not.
     const [isLoading, setIsLoading] = useState<boolean>(false)
     // API response for movie searching in a state.
-    const [movieData, setMovieData] = useState<SearchResponse>({
-        movies: [],
-        total: 0,
-        response: false
-    })
+    const [movieData, setMovieData] = useState<SearchResponse>(initialSearchState)
     // Clicked movie card will display a modal. This state shows whether the movie card is clicked or not.
     const [isMovieDetailOpen, setIsMovieDetailOpen] = useState<boolean>(false)
     // Movie detail of clicked movie card.
-    const [clickedMovie, setClickedMovie] = useState<MovieDetail>({
-        title: "",
-        year: 0,
-        imdbID: "",
-        type: "",
-        poster: "",
-        rated: "",
-        released: "",
-        runtime: "",
-        genre: "",
-        director: "",
-        writer: "",
-        actors: "",
-        plot: "",
-        language: "",
-        country: "",
-        awards: "",
-        ratings: [],
-        metascore: "",
-        imdbRating: "",
-        imdbVotes: "",
-        dvd: "",
-        boxOffice: "",
-        production: "",
-        website: "",
-        response: false
-    })
+    const [clickedMovie, setClickedMovie] = useState<MovieDetail>(initialMovieState)
 
     // Set type value on navbar based on `selectedType` state.
     const typeValue = useMemo(() =>
@@ -107,15 +111,20 @@ export default function Search() {
         getMovie(searchQuery, page, typeValue, year)
             .then((result: any) => {
                 // Display error message if request failed.
-                "Error" in result ?
+                if ("Error" in result) {
                     setMessage(result.Error)
-                    : // Set movie data state from API response.
+                }
+                else {
+                    // Set message as empty for successful data fetching.
+                    setMessage("")
+                    // Set movie data state from API response.
                     setMovieData({
                         ...movieData,
                         movies: result.Search,
                         total: +result.totalResults,
                         response: result.Response === "True"
                     })
+                }
                 // Set loading as false as data has been fetched.
                 setIsLoading(false)
             })
@@ -184,13 +193,21 @@ export default function Search() {
             pathname: "/search",
             search: searchUrl,
         })
-        // Make request.
+        // Make a request.
         fetchMovies()
     }
 
-    const loading = () => {
+    const displayLoading = () => {
         return (
             <Loading className={styles.loader} type='points' />
+        )
+    }
+
+    const displayNoResult = () => {
+        return (
+            <div className={styles.displayNoResult}>
+                <p> {"Sorry, there's no results for your search :("} </p>
+            </div>
         )
     }
 
@@ -205,49 +222,56 @@ export default function Search() {
                 typeValue={typeValue}
                 setSearchQuery={setSearchQuery}
                 setSelectedType={setSelectedType} />
+                
             <main className={styles.page}>
-                {isLoading ? loading() : null}
-                {message ? message : `Search on title "${searchQuery}" has a total of ${movieData.total} results.`}
-                <Grid.Container gap={2} className={styles.content}>
-                    {movieData.movies.map((movie: any) => (
-                        <Grid>
-                            <Card
-                                isPressable
-                                onPress={() => fetchMovieById(movie)}
-                                key={movie.imdbID}
-                                aria-label={`${movie.imdbID}-${movie.year}`}
-                                className={styles.movieCard}>
-                                <Card.Header className={styles.poster}>
-                                    <Image
-                                        src={movie.Poster !== "N/A" ? movie.Poster : ""}
-                                        alt="movie poster"
-                                        width={140} height={160} />
-                                </Card.Header>
-                                <Card.Body className={styles.cardBody}>
-                                    <Badge
-                                        size={"xs"}
-                                        disableOutline
-                                        variant={"bordered"}
-                                        css={{
-                                            borderColor: `$${typeColorMap[movie.Type]}`,
-                                            color: `$${typeColorMap[movie.Type]}`}}
-                                        > {movie.Type} </Badge>
-                                    <p className={styles.title}> {movie.Title} ({movie.Year}) </p>
-                                </Card.Body>
-                            </Card>
-                        </Grid>
-                    ))}
-                </Grid.Container>
-                <Pagination
-                    bordered
-                    rounded
-                    className={styles.pagination}
-                    onChange={(page: number) => setPage(page)}
-                    color={"primary"}
-                    total={Math.ceil(movieData.total / amountContents)} />
+                {isLoading ? displayLoading() : null}
+                {message ?
+                    displayNoResult() :
+                    <>
+                        <p> {`Search on title "${searchQuery}" has a total of ${movieData.total} results.`}</p>
+                        <Grid.Container gap={2} className={styles.content}>
+                            {movieData.movies.map((movie: any) => (
+                                <Grid>
+                                    <Card
+                                        isPressable
+                                        onPress={() => fetchMovieById(movie)}
+                                        key={movie.imdbID}
+                                        aria-label={`${movie.imdbID}-${movie.year}`}
+                                        className={styles.movieCard}>
+                                        <Card.Header className={styles.poster}>
+                                            <Image
+                                                src={movie.Poster !== "N/A" ? movie.Poster : ""}
+                                                alt="movie poster"
+                                                width={140} height={160} />
+                                        </Card.Header>
+                                        <Card.Body className={styles.cardBody}>
+                                            <Badge
+                                                size={"xs"}
+                                                disableOutline
+                                                variant={"bordered"}
+                                                css={{
+                                                    borderColor: `$${typeColorMap[movie.Type]}`,
+                                                    color: `$${typeColorMap[movie.Type]}`
+                                                }}
+                                            > {movie.Type} </Badge>
+                                            <p className={styles.title}> {movie.Title} ({movie.Year}) </p>
+                                        </Card.Body>
+                                    </Card>
+                                </Grid>
+                            ))}
+                        </Grid.Container>
+                        <Pagination
+                            bordered
+                            rounded
+                            className={styles.pagination}
+                            onChange={(page: number) => setPage(page)}
+                            color={"primary"}
+                            total={Math.ceil(movieData.total / amountContents)} />
+                    </>
+                }
             </main>
             <Spacer />
-            {isLoading ? loading()
+            {isLoading ? displayLoading()
                 : <MovieDetailModal
                     isOpen={isMovieDetailOpen}
                     setIsOpen={setIsMovieDetailOpen}
