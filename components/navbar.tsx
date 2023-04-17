@@ -1,6 +1,6 @@
 import Image from 'next/image'
-import { Navbar, Input, Dropdown } from "@nextui-org/react";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Navbar, Input, Dropdown, FormElement } from "@nextui-org/react";
+import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
 
 export default function NavBar(props: {
     selectedType: Set<any>,
@@ -22,26 +22,33 @@ export default function NavBar(props: {
         setSearchQuery,
         handleSearch } = props
 
+    // Set movie title input value at navbar.
+    const [input, setInput] = useState<string>(searchQuery)
+
     useEffect(() => {
         // Make request and set the URL when there's changes on navbar values.
         handleSearch()
     }, [searchQuery, year, selectedType])
-    
+
     return (
         <Navbar variant={"sticky"}>
             <Navbar.Brand>
-                {/* <Image src="favicon.svg" alt="logo" width={20} height={20} /> */}
+                <p> ENZ.mov </p>
             </Navbar.Brand>
             <Navbar.Content>
                 <Input
+                    type="text"
+                    value={input}
+                    clearable
                     placeholder="Movie title"
                     contentRight={
                         <Image
-                            src="magnifierIcon.svg"
-                            alt="search"
-                            width={24}
-                            height={24} />
+                        src="magnifierIcon.svg"
+                        alt="search"
+                        width={24}
+                        height={24} />
                     }
+                    onChange={(event: ChangeEvent<FormElement>) => setInput(event.target.value)}
                     onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                         const input = e.target as HTMLInputElement
                         if (e.key == "Enter") {
@@ -64,7 +71,7 @@ export default function NavBar(props: {
                     <Dropdown.Button
                         bordered
                         color={"primary"}>
-                        {typeValue ? typeValue.toUpperCase() : "type"}
+                        {typeValue ? typeValue.toUpperCase() : "type".toUpperCase()}
                     </Dropdown.Button>
                     <Dropdown.Menu
                         selectionMode="single"
